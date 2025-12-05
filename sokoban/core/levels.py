@@ -1,4 +1,4 @@
-from typing import Tuple, Set
+from typing import List, Tuple, Set
 from .model import Level
 
 LEGEND = {
@@ -15,6 +15,27 @@ LEGEND = {
 def load_txt(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:
         return f.read().rstrip("\n")
+
+
+def split_levels(text: str) -> List[str]:
+    """Split a multi-level text file into individual ASCII boards."""
+
+    boards: List[str] = []
+    current: List[str] = []
+
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip("\n")
+        if not line.strip():
+            if current:
+                boards.append("\n".join(current).rstrip())
+                current = []
+            continue
+        current.append(line)
+
+    if current:
+        boards.append("\n".join(current).rstrip())
+
+    return boards or [text.strip()]
 
 
 def parse_ascii(text: str) -> Level:
